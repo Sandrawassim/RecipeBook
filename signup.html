@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Recipe Book - Create Account</title>
+</head>
+<body class="signup-page">
+    <!-- Sign-Up Section -->
+    <section id="signup" class="sign-up">
+        <h2 class="sign-up-heading" style="color:aliceblue">Create New Account</h2>
+        
+        <form id="signupForm" method="POST" class="signup-form">
+            <div class="form-group">
+                <label for="username" class="label">Username</label>
+                <input type="text" id="username" name="username" class="input-field" required>
+            </div>
+        
+            <div class="form-group">
+                <label for="email" class="label">Email</label>
+                <input type="email" id="email" name="email" class="input-field" required>
+            </div>
+        
+            <div class="form-group">
+                <label for="password" class="label">Password</label>
+                <input type="password" id="password" name="password" class="input-field" required>
+            </div>
+        
+            <div class="form-group">
+                <label for="phoneNumber" class="label">Phone Number</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" class="input-field" required>
+            </div>
+        
+            <button type="submit" class="submit-btn">Create Account</button>
+        </form>
+    </section>
+
+    <!-- Pop-up Modal for Success or Error Message -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="messageContent"></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Recipe Book Website. All rights reserved.</p>
+        <p>Designed with ❤️ </p>
+    </footer>
+
+    <script>
+        // Handle form submission using AJAX
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent form from submitting normally
+
+            var username = document.getElementById('username').value;
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var phoneNumber = document.getElementById('phoneNumber').value;
+
+            var formData = new FormData();
+            formData.append('username', username);
+            formData.append('email', email);
+            formData.append('password', password);
+            formData.append('phoneNumber', phoneNumber);
+
+            // Use Fetch API or XMLHttpRequest for AJAX
+            fetch('backend/signup.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())  // Assuming the PHP returns a JSON response
+            .then(data => {
+                if (data.error) {
+                    // Show the error message in the modal
+                    document.getElementById('messageContent').innerText = data.error;
+                    document.getElementById('messageModal').style.display = 'block';
+                } else if (data.success) {
+                    // Show the success message in the modal
+                    document.getElementById('messageContent').innerText = data.success;
+                    document.getElementById('messageModal').style.display = 'block';
+                }
+            })
+            .catch(error => console.log('Error:', error));
+        });
+
+        // Close the modal when the user clicks on the close button
+        document.querySelector('.close').addEventListener('click', function() {
+            document.getElementById('messageModal').style.display = 'none';
+        });
+
+        // Close the modal if the user clicks anywhere outside of the modal
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('messageModal')) {
+                document.getElementById('messageModal').style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Sign In - Recipe Book</title>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1 style="color: azure;">Sign In to Recipe Book</h1>
+    </header>
+
+    <!-- Sign In Form -->
+    <section class="signin-container">
+        <div class="container">
+            <h2 class="sign-up-heading">Welcome Back!</h2>
+            <form id="signinForm" class="signin-form">
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn">Sign In</button>
+            </form>
+
+            <div class="alternative-links">
+                <p>Don't have an account? <a href="signup.html">Create Account</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pop-up Modal for Error Message -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Recipe Book Website. All rights reserved.</p>
+        <p>Designed with ❤️ </p>
+    </footer>
+
+    <script>
+        // Handle form submission using AJAX
+        document.getElementById('signinForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent form from submitting normally
+
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+
+            var formData = new FormData();
+            formData.append('email', email);
+            formData.append('password', password);
+
+            // Use Fetch API or XMLHttpRequest for AJAX
+            fetch('backend/login.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())  // Parse JSON response
+            .then(data => {
+                if (data.success) {
+                    // Redirect to home page on successful login
+                    window.location.href = '/RecipeBook/backend/home.php';
+                } else if (data.error) {
+                    // Display error message in the modal
+                    document.getElementById('errorMessage').innerText = data.error;
+                    document.getElementById('errorModal').style.display = 'block';
+                }
+            })
+            .catch(error => console.log('Error:', error));
+        });
+
+        // Close the modal when the user clicks on the close button
+        document.querySelector('.close').addEventListener('click', function() {
+            document.getElementById('errorModal').style.display = 'none';
+        });
+
+        // Close the modal if the user clicks anywhere outside of the modal
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('errorModal')) {
+                document.getElementById('errorModal').style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
